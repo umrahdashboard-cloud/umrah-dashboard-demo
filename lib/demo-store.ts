@@ -48,7 +48,17 @@ const DEFAULT_TRANSPORT_RATES: TransportRate[] = [
   { id: 't8', type: 'private', pax_count: 4, rate_sar: 675 },
 ]
 
-const DEFAULT_VISA: VisaSettings = { id: 'v1', adult_sar: 600, child_sar: 600, infant_sar: 460, transport_mode: 'included' }
+const DEFAULT_VISA: VisaSettings = {
+  id: 'v1',
+  visa_rate_1_pax: 725,
+  visa_rate_2_pax: 700,
+  visa_rate_3_pax: 675,
+  visa_rate_4_pax: 650,
+  visa_rate_group_pax: 600,
+  child_sar: 600,
+  infant_sar: 460,
+  transport_mode: 'included',
+}
 const DEFAULT_CURRENCY: CurrencySettings = { id: 'c1', sar_to_pkr: 75 }
 const DEFAULT_COMPANY: Company = { id: 'co1', name: 'Fast Travels & Tours', license: 'Govt License', phone: '', website: 'fasttravels.pk', address: 'Pakistan', logo_url: '' }
 

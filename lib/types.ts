@@ -1,6 +1,10 @@
 export interface VisaSettings {
   id: string
-  adult_sar: number
+  visa_rate_1_pax: number      // 1 PAX
+  visa_rate_2_pax: number      // 2 PAX
+  visa_rate_3_pax: number      // 3 PAX
+  visa_rate_4_pax: number      // 4 PAX
+  visa_rate_group_pax: number  // 5–49 PAX
   child_sar: number
   infant_sar: number
   transport_mode: 'included' | 'separate'

@@ -37,7 +37,17 @@ export async function getVisa(): Promise<VisaSettings> {
   if (isDemoMode()) return { ...demoStore.visa }
   const sb = await getSupabase()
   const { data } = await sb.from('visa_settings').select('*').single()
-  return data ?? { id: '', adult_sar: 600, child_sar: 600, infant_sar: 460, transport_mode: 'included' as const }
+  return data ?? {
+    id: '',
+    visa_rate_1_pax: 725,
+    visa_rate_2_pax: 700,
+    visa_rate_3_pax: 675,
+    visa_rate_4_pax: 650,
+    visa_rate_group_pax: 600,
+    child_sar: 600,
+    infant_sar: 460,
+    transport_mode: 'included' as const,
+  }
 }
 
 // ── Currency ─────────────────────────────────────────────────────────────────

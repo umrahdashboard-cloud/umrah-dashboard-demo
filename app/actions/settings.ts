@@ -11,10 +11,14 @@ async function getSupabase() {
 
 export async function updateVisa(formData: FormData) {
   const payload = {
-    adult_sar: Number(formData.get('adult_sar')),
-    child_sar: Number(formData.get('child_sar')),
-    infant_sar: Number(formData.get('infant_sar')),
-    transport_mode: formData.get('transport_mode') as 'included' | 'separate',
+    visa_rate_1_pax:    Number(formData.get('visa_rate_1_pax')),
+    visa_rate_2_pax:    Number(formData.get('visa_rate_2_pax')),
+    visa_rate_3_pax:    Number(formData.get('visa_rate_3_pax')),
+    visa_rate_4_pax:    Number(formData.get('visa_rate_4_pax')),
+    visa_rate_group_pax: Number(formData.get('visa_rate_group_pax')),
+    child_sar:          Number(formData.get('child_sar')),
+    infant_sar:         Number(formData.get('infant_sar')),
+    transport_mode:     formData.get('transport_mode') as 'included' | 'separate',
   }
   if (isDemoMode()) {
     Object.assign(demoStore.visa, payload)

@@ -1,11 +1,18 @@
-import type { CalcInput, CalcResult, TransportRate } from './types'
+import type { CalcInput, CalcResult, TransportRate, VisaSettings } from './types'
+
+function getAdultVisaRate(visa: VisaSettings, pax: number): number {
+  if (pax <= 1) return visa.visa_rate_1_pax
+  if (pax === 2) return visa.visa_rate_2_pax
+  if (pax === 3) return visa.visa_rate_3_pax
+  if (pax === 4) return visa.visa_rate_4_pax
+  return visa.visa_rate_group_pax  // 5+
+}
 
 export function getCalc(
   input: CalcInput,
   transportRates: TransportRate[],
   sarToPkr: number,
-  visaAdultSar: number,
-  visaInfantSar: number,
+  visa: VisaSettings,
   transportMode: 'included' | 'separate'
 ): CalcResult {
   const { adult, child, infant, airline, transportType,
@@ -20,8 +27,9 @@ export function getCalc(
     ? adult * airline.adult_pkr + child * airline.child_pkr + infant * airline.infant_pkr
     : 0
 
-  // Visa (PKR) — children use adult visa rate, matching original behavior
-  const visaCost = ((adult + child) * visaAdultSar + infant * visaInfantSar) * sarToPkr
+  // Visa (PKR) — tier rate by total PAX; children use adult visa rate
+  const visaAdultSar = getAdultVisaRate(visa, pax)
+  const visaCost = ((adult + child) * visaAdultSar + infant * visa.infant_sar) * sarToPkr
 
   // Transport (PKR)
   let transportCost = 0

@@ -64,10 +64,13 @@ export default function CalculatorForm({
   }
 
   const calc = useMemo(
-    () => getCalc(input, transportRates, currency.sar_to_pkr, visa.adult_sar, visa.infant_sar, visa.transport_mode),
+    () => getCalc(input, transportRates, currency.sar_to_pkr, visa, visa.transport_mode),
     [adult, child, infant, airlineId, transportType, makkahHotelId, makkahRoom, makkahNights,
      madinahHotelId, madinahRoom, madinahNights, profitType, profitValue, sellingOverride, advance,
-     currency.sar_to_pkr, visa.adult_sar, visa.infant_sar, visa.transport_mode, transportRates]
+     currency.sar_to_pkr,
+     visa.visa_rate_1_pax, visa.visa_rate_2_pax, visa.visa_rate_3_pax,
+     visa.visa_rate_4_pax, visa.visa_rate_group_pax,
+     visa.infant_sar, visa.transport_mode, transportRates]
   )
 
   const handlePrint = useReactToPrint({ contentRef: printRef })
