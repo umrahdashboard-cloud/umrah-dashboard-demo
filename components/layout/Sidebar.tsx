@@ -62,8 +62,8 @@ export default function Sidebar({ companyName, open, onClose, collapsed, onToggl
           'flex items-center border-b border-white/10 flex-shrink-0',
           collapsed ? 'flex-col gap-2 px-2 py-4' : 'gap-3 px-4 py-4'
         )}>
-          <div className="w-9 h-9 rounded-xl bg-gold flex items-center justify-center flex-shrink-0">
-            <Plane className="w-5 h-5 text-navy" />
+          <div className="w-16 h-16 rounded-xl bg-transparent flex items-center justify-center flex-shrink-0">
+            <img src="/logo.webp" alt="Fast Travels & Tours" className="w-full h-full object-contain" />
           </div>
 
           {!collapsed && (
@@ -115,7 +115,7 @@ export default function Sidebar({ companyName, open, onClose, collapsed, onToggl
                   ? 'justify-center px-0 py-2.5'
                   : 'gap-3 px-3 py-2.5',
                 isActive(href)
-                  ? 'bg-gold text-white font-semibold shadow-sm'
+                  ? 'bg-gold-gradient text-navy font-semibold'
                   : 'text-white/70 hover:text-white hover:bg-white/10'
               )}
             >

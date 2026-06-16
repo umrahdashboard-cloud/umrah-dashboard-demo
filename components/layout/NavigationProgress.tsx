@@ -67,8 +67,8 @@ export default function NavigationProgress() {
       className="pointer-events-none fixed inset-x-0 top-0 z-[9999] h-[3px]"
       style={{
         width: `${width}%`,
-        backgroundColor: '#6366f1',
-        boxShadow: visible ? '0 0 10px #6366f199' : 'none',
+        backgroundImage: 'linear-gradient(135deg, #d7ab52, #f1c97c)',
+        boxShadow: visible ? '0 0 10px #d7ab5299' : 'none',
         opacity: visible ? 1 : 0,
         transition: visible
           ? width >= 100

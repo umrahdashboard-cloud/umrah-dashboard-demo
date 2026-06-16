@@ -7,15 +7,14 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 // ── Palette ──────────────────────────────────────────────────────────────────
-const INDIGO   = '#6366f1'
-const INDIGO_L = '#a5b4fc'
-const VIOLET   = '#8b5cf6'
+const GOLD     = '#d7ab52'
+const NAVY     = '#0b1e36'
 const EMERALD  = '#10b981'
 const AMBER    = '#f59e0b'
 const ROSE     = '#f43f5e'
 const SLATE    = '#94a3b8'
 
-const PIE_COLORS = [EMERALD, AMBER, ROSE, INDIGO, VIOLET, SLATE]
+const PIE_COLORS = [GOLD, EMERALD, AMBER, ROSE, NAVY, SLATE]
 
 // ── Custom tooltip ────────────────────────────────────────────────────────────
 function CustomTooltip({ active, payload, label, prefix = 'PKR ' }: {
@@ -77,8 +76,8 @@ function RevenueChart({ data }: { data: RevenuePoint[] }) {
           <AreaChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="gRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor={INDIGO}   stopOpacity={0.18} />
-                <stop offset="95%" stopColor={INDIGO}   stopOpacity={0} />
+                <stop offset="5%"  stopColor={GOLD}     stopOpacity={0.20} />
+                <stop offset="95%" stopColor={GOLD}     stopOpacity={0} />
               </linearGradient>
               <linearGradient id="gProfit" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%"  stopColor={EMERALD}  stopOpacity={0.18} />
@@ -95,7 +94,7 @@ function RevenueChart({ data }: { data: RevenuePoint[] }) {
               tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v} />
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ fontSize: 11 }} />
-            <Area type="monotone" dataKey="revenue" name="Revenue" stroke={INDIGO}  strokeWidth={2.5} fill="url(#gRevenue)" dot={{ r: 3, fill: INDIGO,  strokeWidth: 0 }} activeDot={{ r: 5 }} />
+            <Area type="monotone" dataKey="revenue" name="Revenue" stroke={GOLD}    strokeWidth={2.5} fill="url(#gRevenue)" dot={{ r: 3, fill: GOLD,    strokeWidth: 0 }} activeDot={{ r: 5 }} />
             <Area type="monotone" dataKey="cost"    name="Cost"    stroke={ROSE}    strokeWidth={2.5} fill="url(#gCost)"    dot={{ r: 3, fill: ROSE,    strokeWidth: 0 }} activeDot={{ r: 5 }} />
             <Area type="monotone" dataKey="profit"  name="Profit"  stroke={EMERALD} strokeWidth={2.5} fill="url(#gProfit)"  dot={{ r: 3, fill: EMERALD, strokeWidth: 0 }} activeDot={{ r: 5 }} />
           </AreaChart>
@@ -208,7 +207,7 @@ function PaymentMethodBar({ data }: { data: PaymentPoint[] }) {
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="amount" name="Amount" radius={[6, 6, 0, 0]} maxBarSize={40}>
                 {data.map((_, i) => (
-                  <Cell key={i} fill={[INDIGO, EMERALD, VIOLET, AMBER][i % 4]} fillOpacity={0.85} />
+                  <Cell key={i} fill={[GOLD, EMERALD, AMBER, NAVY][i % 4]} fillOpacity={0.85} />
                 ))}
               </Bar>
             </BarChart>
@@ -251,7 +250,7 @@ function ProfitMargin({ revenue, cost, profit }: { revenue: number; cost: number
 
         {/* Three metrics */}
         {[
-          { label: 'Revenue', value: revenue, color: INDIGO, pct: 100 },
+          { label: 'Revenue', value: revenue, color: GOLD,   pct: 100 },
           { label: 'Cost',    value: cost,    color: ROSE,   pct: costPct },
           { label: 'Profit',  value: profit,  color: EMERALD, pct: margin },
         ].map(r => (
@@ -314,7 +313,7 @@ export default function DashboardCharts({
                       <p className="text-sm font-medium truncate">{a.name}</p>
                       <p className="text-xs text-muted-foreground">{a.bookings} booking{a.bookings !== 1 ? 's' : ''}</p>
                     </div>
-                    <p className="text-sm font-semibold text-indigo-600 flex-shrink-0">
+                    <p className="text-sm font-semibold text-gold flex-shrink-0">
                       PKR {Math.round(a.revenue).toLocaleString('en-PK')}
                     </p>
                   </div>

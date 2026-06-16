@@ -5,14 +5,19 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Sidebar: calm slate-blue. Accent: soft indigo. No purple. */
-  --color-navy:   #1e293b;   /* slate-800  — sidebar background      */
-  --color-navy-2: #293548;   /* slate-750  — sidebar hover           */
-  --color-navy-3: #334155;   /* slate-700  — borders inside dark     */
-  --color-gold:   #6366f1;   /* indigo-500 — primary accent / CTA    */
-  --color-gold-2: #818cf8;   /* indigo-400 — hover accent (lighter)  */
-  --color-gold-3: #4f46e5;   /* indigo-600 — pressed accent (deeper) */
+  /* Sidebar: deep navy. Accent: gradient gold. */
+  --color-navy:   #0b1e36;   /* deep navy   — sidebar background     */
+  --color-navy-2: #112844;   /* navy hover  — sidebar item hover     */
+  --color-navy-3: #1a3a5c;   /* navy border — dividers inside dark   */
+  --color-gold:   #d7ab52;   /* gold base   — text / icon / tints    */
+  --color-gold-2: #f1c97c;   /* gold light  — gradient end / hover   */
+  --color-gold-3: #b8921a;   /* gold dark   — pressed accent         */
+  --gradient-gold: linear-gradient(135deg, #d7ab52, #f1c97c);
   --font-sans: ui-sans-serif, system-ui, sans-serif;
+}
+
+@utility bg-gold-gradient {
+  background-image: linear-gradient(135deg, #d7ab52, #f1c97c);
 }
 
 @theme inline {
@@ -66,32 +71,32 @@
   --card-foreground: oklch(0.15 0.01 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.01 250);
-  --primary: oklch(0.585 0.2 264);         /* indigo-500 #6366f1 — soft, not vibrant */
-  --primary-foreground: oklch(1 0 0);
+  --primary: oklch(0.730 0.135 78);          /* gold #d7ab52 */
+  --primary-foreground: oklch(0.13 0.04 250); /* deep navy text on gold buttons */
   --secondary: oklch(0.96 0.005 250);
   --secondary-foreground: oklch(0.25 0.01 250);
   --muted: oklch(0.96 0.005 250);
   --muted-foreground: oklch(0.50 0.01 250);
-  --accent: oklch(0.94 0.01 260);
-  --accent-foreground: oklch(0.30 0.08 264);
+  --accent: oklch(0.95 0.03 88);           /* very light gold tint */
+  --accent-foreground: oklch(0.35 0.08 88);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.90 0.005 250);
   --input: oklch(0.90 0.005 250);
-  --ring: oklch(0.585 0.2 264);            /* indigo ring */
-  --chart-1: oklch(0.585 0.2 264);
-  --chart-2: oklch(0.65 0.15 230);
-  --chart-3: oklch(0.72 0.12 210);
-  --chart-4: oklch(0.55 0.18 290);
-  --chart-5: oklch(0.45 0.16 264);
+  --ring: oklch(0.730 0.135 78);            /* gold focus ring */
+  --chart-1: oklch(0.730 0.135 78);         /* gold */
+  --chart-2: oklch(0.62 0.18 230);         /* blue */
+  --chart-3: oklch(0.72 0.12 185);         /* teal */
+  --chart-4: oklch(0.77 0.16 65);          /* amber */
+  --chart-5: oklch(0.25 0.06 250);         /* deep navy */
   --radius: 0.75rem;
   --sidebar: oklch(0.97 0 0);
   --sidebar-foreground: oklch(0.15 0.01 250);
-  --sidebar-primary: oklch(0.585 0.2 264);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.94 0.01 260);
-  --sidebar-accent-foreground: oklch(0.30 0.08 264);
+  --sidebar-primary: oklch(0.730 0.135 78);
+  --sidebar-primary-foreground: oklch(0.13 0.04 250);
+  --sidebar-accent: oklch(0.95 0.03 88);
+  --sidebar-accent-foreground: oklch(0.35 0.08 88);
   --sidebar-border: oklch(0.90 0.005 250);
-  --sidebar-ring: oklch(0.585 0.2 264);
+  --sidebar-ring: oklch(0.735 0.148 87.5);
 }
 
 .dark {

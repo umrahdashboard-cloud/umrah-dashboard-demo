@@ -40,7 +40,7 @@ export default function LoginPage() {
         <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-gold/5 translate-y-1/2 -translate-x-1/2" />
 
         <div className="relative z-10 text-center">
-          <div className="w-20 h-20 rounded-2xl bg-gold flex items-center justify-center mx-auto mb-6 shadow-xl">
+          <div className="w-20 h-20 rounded-2xl bg-gold-gradient flex items-center justify-center mx-auto mb-6 shadow-xl">
             <Plane className="w-10 h-10 text-navy" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Fast Travels</h1>

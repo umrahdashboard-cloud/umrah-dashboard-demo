@@ -81,9 +81,9 @@ export default async function DashboardPage() {
       {/* KPI grid */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <KpiCard label="Total Bookings"  value={String(totalBookings)}  icon={BookOpen}
-          iconBg="bg-indigo-50" iconColor="text-indigo-500" />
+          iconBg="bg-amber-50" iconColor="text-gold" />
         <KpiCard label="Customers"       value={String(uniqueCustomers)} icon={Users}
-          iconBg="bg-violet-50" iconColor="text-violet-500" />
+          iconBg="bg-amber-50" iconColor="text-gold" />
         <KpiCard label="Revenue"         value={pkr(totalRevenue)}       icon={DollarSign}
           iconBg="bg-emerald-50" iconColor="text-emerald-600" />
         <KpiCard label="Profit"          value={pkr(totalProfit)}        icon={TrendingUp}
@@ -124,8 +124,8 @@ export default async function DashboardPage() {
                 <div className="divide-y divide-border">
                   {recent.map((b) => (
                     <div key={b.id} className="flex items-center gap-4 px-6 py-3.5 hover:bg-muted/30 transition-colors">
-                      <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center flex-shrink-0">
-                        <span className="text-xs font-bold text-indigo-600">
+                      <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
+                        <span className="text-xs font-bold text-gold">
                           {b.customer_name.charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -159,7 +159,7 @@ export default async function DashboardPage() {
               <h3 className="font-semibold mb-1">Create Package</h3>
               <p className="text-white/60 text-xs mb-4">Build and save a new Umrah package instantly</p>
               <Link href="/calculator">
-                <Button size="sm" className="bg-gold hover:bg-gold-2 h-10 text-white font-semibold w-full">
+                <Button size="sm" className="bg-gold-gradient hover:brightness-110 h-10 text-navy font-semibold w-full">
                   Open Calculator
                 </Button>
               </Link>

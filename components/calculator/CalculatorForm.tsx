@@ -363,7 +363,7 @@ export default function CalculatorForm({
                 <Button
                   onClick={handleSave}
                   disabled={isPending || saved}
-                  className="w-full bg-gold hover:bg-gold-2 text-white font-semibold h-10"
+                  className="w-full bg-gold-gradient hover:brightness-110 text-navy font-semibold h-10"
                 >
                   {isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : saved ? <CheckCircle className="w-4 h-4 mr-2" /> : <BookmarkPlus className="w-4 h-4 mr-2" />}
                   {saved ? 'Saved!' : 'Save Booking'}
