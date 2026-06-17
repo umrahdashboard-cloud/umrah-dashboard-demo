@@ -29,7 +29,7 @@ export default function ZiaratsForm({ visa }: { visa: VisaSettings }) {
         </p>
       </CardHeader>
       <CardContent>
-        <form action={handleSubmit} className="space-y-4">
+        <form key={`${visa.makkah_ziarat_rate}-${visa.madina_ziarat_rate}`} action={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label className="text-xs">Makkah Ziarat (SAR)</Label>

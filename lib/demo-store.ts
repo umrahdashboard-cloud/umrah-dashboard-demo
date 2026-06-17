@@ -187,7 +187,7 @@ class DemoStore {
 }
 
 // Bump this whenever DemoStore gains new fields, to force recreation in dev hot-reloads
-const STORE_VERSION = 2
+const STORE_VERSION = 3
 
 const globalStore = globalThis as typeof globalThis & {
   __demoStore?: DemoStore
