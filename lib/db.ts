@@ -37,7 +37,7 @@ export async function getVisa(): Promise<VisaSettings> {
   if (isDemoMode()) return { ...demoStore.visa }
   const sb = await getSupabase()
   const { data } = await sb.from('visa_settings').select('*').single()
-  return data ?? {
+  if (!data) return {
     id: '',
     visa_rate_1_pax: 725,
     visa_rate_2_pax: 700,
@@ -49,6 +49,17 @@ export async function getVisa(): Promise<VisaSettings> {
     transport_mode: 'included' as const,
     makkah_ziarat_rate: 0,
     madina_ziarat_rate: 0,
+  }
+  // Coerce any columns that may be null if migration hasn't run yet
+  return {
+    ...data,
+    visa_rate_1_pax:     data.visa_rate_1_pax     ?? 725,
+    visa_rate_2_pax:     data.visa_rate_2_pax     ?? 700,
+    visa_rate_3_pax:     data.visa_rate_3_pax     ?? 675,
+    visa_rate_4_pax:     data.visa_rate_4_pax     ?? 650,
+    visa_rate_group_pax: data.visa_rate_group_pax ?? 600,
+    makkah_ziarat_rate:  data.makkah_ziarat_rate  ?? 0,
+    madina_ziarat_rate:  data.madina_ziarat_rate  ?? 0,
   }
 }
 
