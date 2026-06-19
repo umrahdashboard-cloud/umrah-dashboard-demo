@@ -19,14 +19,19 @@ export function getCalc(
           makkahHotel, makkahRoom, makkahNights,
           madinahHotel, madinahRoom, madinahNights,
           profitType, profitValue, sellingOverride, advance,
-          makkahZiarat, madinahZiarat } = input
+          makkahZiarat, madinahZiarat,
+          customTicket, customTicketSar } = input
 
   const pax = Math.max(1, adult + child + infant)
 
   // Tickets (PKR)
-  const ticketCost = airline
-    ? adult * airline.adult_pkr + child * airline.child_pkr + infant * airline.infant_pkr
-    : 0
+  // Custom ticket: user enters a flat SAR price for the whole group → convert to PKR
+  // Standard ticket: per-pax PKR rates from the airline record
+  const ticketCost = customTicket
+    ? customTicketSar * sarToPkr
+    : airline
+      ? adult * airline.adult_pkr + child * airline.child_pkr + infant * airline.infant_pkr
+      : 0
 
   // Visa (PKR) — tier rate by total PAX; children use adult visa rate
   const visaAdultSar = getAdultVisaRate(visa, pax)

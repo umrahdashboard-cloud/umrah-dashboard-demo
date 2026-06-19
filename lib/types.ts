@@ -145,6 +145,9 @@ export interface CalcInput {
   customerName: string
   makkahZiarat: boolean
   madinahZiarat: boolean
+  customTicket: boolean
+  customTicketLabel: string   // airline name + route entered by user
+  customTicketSar: number     // total ticket cost in SAR (all pax combined)
 }
 
 export interface CalcResult {

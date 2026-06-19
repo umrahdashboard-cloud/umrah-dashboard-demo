@@ -55,6 +55,16 @@ export default function CalculatorForm({
   const [customerName, setCustomerName] = useState('')
   const [makkahZiarat, setMakkahZiarat] = useState(false)
   const [madinahZiarat, setMadinahZiarat] = useState(false)
+  const [customTicket, setCustomTicket] = useState(false)
+  const [customTicketLabel, setCustomTicketLabel] = useState('')
+  const [customTicketSar, setCustomTicketSar] = useState(0)
+  const [travelDate, setTravelDate] = useState('')
+  const [departureCity, setDepartureCity] = useState('')
+  const [arrivalCity, setArrivalCity] = useState('')
+  const [returnCity, setReturnCity] = useState('')
+
+  const PK_CITIES = ['Islamabad', 'Lahore', 'Karachi', 'Peshawar', 'Multan', 'Sialkot', 'Faisalabad', 'Quetta']
+  const SA_CITIES = ['Jeddah', 'Madinah', 'Riyadh', 'Dammam']
 
   const airline = airlines.find(a => a.id === airlineId) ?? null
   const makkahHotel = makkahHotels.find(h => h.id === makkahHotelId) ?? null
@@ -68,6 +78,9 @@ export default function CalculatorForm({
     customerName,
     makkahZiarat,
     madinahZiarat,
+    customTicket,
+    customTicketLabel,
+    customTicketSar,
   }
 
   const calc = useMemo(
@@ -79,7 +92,9 @@ export default function CalculatorForm({
      visa.visa_rate_4_pax, visa.visa_rate_group_pax,
      visa.infant_sar, visa.transport_mode,
      visa.makkah_ziarat_rate, visa.madina_ziarat_rate,
-     makkahZiarat, madinahZiarat, transportRates]
+     makkahZiarat, madinahZiarat,
+     customTicket, customTicketSar,
+     transportRates]
   )
 
   const handlePrint = useReactToPrint({
@@ -93,7 +108,7 @@ export default function CalculatorForm({
     startTransition(async () => {
       const result = await createBooking({
         customer_name: customerName || 'Walk-in Customer',
-        airline_name: airline?.name ?? '',
+        airline_name: customTicket ? customTicketLabel : (airline?.name ?? ''),
         total_pkr: calc.selling,
         cost_pkr: calc.totalCost,
         profit_pkr: calc.profit,
@@ -126,19 +141,52 @@ export default function CalculatorForm({
   }
 
   function handleCopyWhatsApp() {
-    const pax = adult + child + infant
-    const text = `*Fast Travels & Tours — Umrah Package*\n\n` +
-      `👤 Passengers: ${adult} Adult${adult > 1 ? 's' : ''}${child ? `, ${child} Child` : ''}${infant ? `, ${infant} Infant` : ''}\n` +
-      `✈️ Airline: ${airline?.name ?? 'N/A'}\n` +
-      `🕌 Makkah: ${makkahHotel?.name ?? 'N/A'} (${makkahRoom}, ${makkahNights} nights)\n` +
-      `🕌 Madinah: ${madinahHotel?.name ?? 'N/A'} (${madinahRoom}, ${madinahNights} nights)\n` +
-      (makkahZiarat  ? `🚌 Makkah Ziarats: Included\n` : '') +
-      (madinahZiarat ? `🚌 Madina Ziarats: Included\n` : '') +
-      `\n`+
-      `💰 *Package: ${fmtPkr(calc.selling)}*\n` +
-      `💰 Per Person: ${fmtPkr(calc.perPax)}\n\n` +
-      `📞 ${company.phone || company.website}`
-    navigator.clipboard.writeText(text)
+    const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+    const totalNights = makkahNights + madinahNights
+    const airlineName = customTicket ? (customTicketLabel || 'Custom Ticket') : (airline?.name ?? '')
+    const formattedDate = travelDate
+      ? new Date(travelDate + 'T00:00:00').toLocaleDateString('en-PK', { day: '2-digit', month: 'long', year: 'numeric' })
+      : null
+    const paxParts = [
+      adult  > 0 ? `${adult} Adult${adult > 1 ? 's' : ''}`     : '',
+      child  > 0 ? `${child} Child${child > 1 ? 'ren' : ''}`   : '',
+      infant > 0 ? `${infant} Infant${infant > 1 ? 's' : ''}`  : '',
+    ].filter(Boolean).join(', ')
+    const contact = company.phone
+      ? `📞 Contact: ${company.phone}`
+      : company.website
+        ? `🌐 Website: ${company.website}`
+        : ''
+
+    const lines: string[] = [
+      `🏷️ *${company.name}*`,
+      `🕋 *${totalNights} Nights Umrah Package*`,
+      ``,
+      ...(formattedDate ? [`📅 Travel Date: ${formattedDate}`] : []),
+      ...((departureCity || arrivalCity || returnCity)
+        ? [`✈️ Route: ${departureCity || '—'} ➜ ${arrivalCity || '—'} ➜ ${returnCity || '—'}`]
+        : []),
+      ...(airlineName ? [`🛫 Airline: ${airlineName}`] : []),
+      ``,
+      `👤 Passengers: ${paxParts}`,
+      ``,
+      `🏨 *Makkah Hotel*`,
+      makkahHotel?.name ?? 'N/A',
+      `🛏️ ${cap(makkahRoom)} Room | 🌙 ${makkahNights} Nights`,
+      ...(makkahZiarat ? [`🚌 Makkah Ziarats: Included`] : []),
+      ``,
+      `🏨 *Madinah Hotel*`,
+      madinahHotel?.name ?? 'N/A',
+      `🛏️ ${cap(madinahRoom)} Room | 🌙 ${madinahNights} Nights`,
+      ...(madinahZiarat ? [`🚌 Madinah Ziarats: Included`] : []),
+      ``,
+      `💰 *Package Price: ${fmtPkr(calc.selling)}*`,
+      `💰 Per Person: ${fmtPkr(calc.perPax)}`,
+      ``,
+      ...(contact ? [contact] : []),
+    ]
+
+    navigator.clipboard.writeText(lines.join('\n'))
     toast.success('WhatsApp message copied!')
   }
 
@@ -190,19 +238,89 @@ export default function CalculatorForm({
               </CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label className="text-xs">Airline</Label>
+              {/* Custom ticket toggle */}
+              <label className="col-span-2 flex items-center gap-2.5 cursor-pointer select-none">
+                <Checkbox
+                  checked={customTicket}
+                  onCheckedChange={v => setCustomTicket(Boolean(v))}
+                />
+                <span className="text-sm">Custom Ticket</span>
+              </label>
+
+              {customTicket ? (
+                <>
+                  {/* Airline / route label — full width */}
+                  <div className="col-span-2 space-y-1.5">
+                    <Label className="text-xs">Airline / Route</Label>
+                    <Input
+                      placeholder="e.g. PIA — LHR to JED"
+                      value={customTicketLabel}
+                      onChange={e => setCustomTicketLabel(e.target.value)}
+                    />
+                  </div>
+                  {/* Price in SAR */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Ticket Price (SAR)</Label>
+                    <Input
+                      type="number" min={0}
+                      value={customTicketSar || ''}
+                      placeholder="0"
+                      onChange={e => setCustomTicketSar(parseFloat(e.target.value) || 0)}
+                    />
+                    {customTicketSar > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        = {fmtPkr(customTicketSar * currency.sar_to_pkr)}
+                      </p>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Airline</Label>
                   <Select value={airlineId} onValueChange={v => v && setAirlineId(v)}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue>{airlines.find(a => a.id === airlineId)?.name ?? 'Select airline'}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent className="min-w-[220px] !w-auto">
-                    {airlines.map(a => (
-                      <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
-                    ))}
+                    <SelectTrigger className="w-full">
+                      <SelectValue>{airlines.find(a => a.id === airlineId)?.name ?? 'Select airline'}</SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="min-w-[220px] !w-auto">
+                      {airlines.map(a => (
+                        <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Route: Departure → Arrival → Return */}
+              <div className="space-y-1.5">
+                <Label className="text-xs">Departure (Pakistan)</Label>
+                <Select value={departureCity} onValueChange={v => v && setDepartureCity(v)}>
+                  <SelectTrigger><SelectValue placeholder="Select city" /></SelectTrigger>
+                  <SelectContent>
+                    {PK_CITIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs">Arrival (Saudi Arabia)</Label>
+                <Select value={arrivalCity} onValueChange={v => v && setArrivalCity(v)}>
+                  <SelectTrigger><SelectValue placeholder="Select city" /></SelectTrigger>
+                  <SelectContent>
+                    {SA_CITIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs">Return Arrival (Pakistan)</Label>
+                <Select value={returnCity} onValueChange={v => v && setReturnCity(v)}>
+                  <SelectTrigger><SelectValue placeholder="Select city" /></SelectTrigger>
+                  <SelectContent>
+                    {PK_CITIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {visa.transport_mode === 'separate' && (
                 <div className="space-y-1.5">
                   <Label className="text-xs">Transport</Label>
@@ -365,13 +483,21 @@ export default function CalculatorForm({
                 Customer
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-1.5">
+            <CardContent className="grid grid-cols-2 gap-4">
+              <div className="col-span-2 space-y-1.5">
                 <Label className="text-xs">Customer Name</Label>
                 <Input
                   placeholder="Walk-in Customer"
                   value={customerName}
                   onChange={e => setCustomerName(e.target.value)}
+                />
+              </div>
+              <div className="col-span-2 space-y-1.5">
+                <Label className="text-xs">Travel Date</Label>
+                <Input
+                  type="date"
+                  value={travelDate}
+                  onChange={e => setTravelDate(e.target.value)}
                 />
               </div>
             </CardContent>
@@ -464,6 +590,15 @@ export default function CalculatorForm({
         advance={advance}
         transportMode={visa.transport_mode}
         company={company}
+        customTicket={customTicket}
+        customTicketLabel={customTicketLabel}
+        customTicketPkr={customTicketSar * currency.sar_to_pkr}
+        makkahZiarat={makkahZiarat}
+        madinahZiarat={madinahZiarat}
+        travelDate={travelDate}
+        departureCity={departureCity}
+        arrivalCity={arrivalCity}
+        returnCity={returnCity}
       />
     </>
   )

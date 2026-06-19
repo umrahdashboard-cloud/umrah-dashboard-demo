@@ -20,14 +20,29 @@ interface Props {
   advance: number
   transportMode: 'included' | 'separate'
   company: Company
+  customTicket: boolean
+  customTicketLabel: string
+  customTicketPkr: number
+  makkahZiarat: boolean
+  madinahZiarat: boolean
+  travelDate: string
+  departureCity: string
+  arrivalCity: string
+  returnCity: string
 }
 
 const InvoicePrint = forwardRef<HTMLDivElement, Props>(function InvoicePrint(
   { invoiceNo, customerName, adult, child, infant, airline,
     makkahHotel, makkahRoom, makkahNights, madinahHotel, madinahRoom, madinahNights,
-    calc, advance, transportMode, company }, ref
+    calc, advance, transportMode, company,
+    customTicket, customTicketLabel, customTicketPkr,
+    makkahZiarat, madinahZiarat, travelDate,
+    departureCity, arrivalCity, returnCity }, ref
 ) {
   const today = new Date().toLocaleDateString('en-PK', { day: '2-digit', month: 'long', year: 'numeric' })
+  const formattedTravelDate = travelDate
+    ? new Date(travelDate + 'T00:00:00').toLocaleDateString('en-PK', { day: '2-digit', month: 'long', year: 'numeric' })
+    : null
   const totalNights = makkahNights + madinahNights
   const totalPax = adult + child + infant
   const paxStr = [
@@ -82,10 +97,18 @@ const InvoicePrint = forwardRef<HTMLDivElement, Props>(function InvoicePrint(
         </div>
 
         {/* Customer */}
-        <div style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px 16px', marginBottom: '12px' }}>
-          <p style={{ fontSize: '10px', color: '#6b7280', marginBottom: '2px' }}>CUSTOMER</p>
-          <p style={{ fontSize: '14px', fontWeight: 700 }}>{customerName}</p>
-          <p style={{ fontSize: '11px', color: '#6b7280' }}>{paxStr}</p>
+        <div style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px 16px', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <p style={{ fontSize: '10px', color: '#6b7280', marginBottom: '2px' }}>CUSTOMER</p>
+            <p style={{ fontSize: '14px', fontWeight: 700 }}>{customerName}</p>
+            <p style={{ fontSize: '11px', color: '#6b7280' }}>{paxStr}</p>
+          </div>
+          {formattedTravelDate && (
+            <div style={{ textAlign: 'right' }}>
+              <p style={{ fontSize: '10px', color: '#6b7280', marginBottom: '2px' }}>TRAVEL DATE</p>
+              <p style={{ fontSize: '13px', fontWeight: 700, color: '#d4a84f' }}>{formattedTravelDate}</p>
+            </div>
+          )}
         </div>
 
         {/* Package Details — 2×2 card grid */}
@@ -98,9 +121,13 @@ const InvoicePrint = forwardRef<HTMLDivElement, Props>(function InvoicePrint(
             {/* Flight */}
             <div style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '10px 12px' }}>
               {sectionHead('✈  FLIGHT & TRANSPORT')}
-              {row('Airline', airline?.name ?? 'N/A', true)}
+              {row('Airline', customTicket ? (customTicketLabel || 'Custom') : (airline?.name ?? 'N/A'), true)}
+              {customTicket && customTicketPkr > 0 && row('Ticket Cost', pkr(customTicketPkr))}
+              {(departureCity || arrivalCity) && row('Route', `${departureCity || '—'} → ${arrivalCity || '—'} → ${returnCity || '—'}`)}
               {row('Transport', transportMode === 'included' ? 'Included in Pkg' : 'Separate')}
               {row('Total Nights', `${totalNights} Nights`, true)}
+              {makkahZiarat  && row('Makkah Ziarats',  'Included')}
+              {madinahZiarat && row('Madinah Ziarats', 'Included')}
             </div>
 
             {/* Passengers */}
