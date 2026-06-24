@@ -6,7 +6,7 @@ function isDemoMode() {
   return !url || url.includes('your-project')
 }
 
-export async function proxy(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Demo mode: allow everything except redirect / → /dashboard
@@ -27,6 +27,17 @@ export async function proxy(request: NextRequest) {
   }
 
   // Production mode: real Supabase auth
+  //
+  // Fast-path: if there is no Supabase session cookie at all, skip the
+  // network round-trip and redirect straight to /login. This prevents an
+  // 11-second hang on every unauthenticated request.
+  const hasSession = request.cookies.getAll().some(c => c.name.startsWith('sb-'))
+
+  if (!hasSession) {
+    if (pathname === '/login') return NextResponse.next({ request })
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
