@@ -78,7 +78,7 @@ export default function LoginPage() {
 
         <div className="relative z-10 text-center">
           <div className="w-20 h-20 rounded-2xl bg-gold-gradient flex items-center justify-center mx-auto mb-6 shadow-xl">
-            <Plane className="w-10 h-10 text-navy" />
+          <img src="/logo.png" alt="Umrah Dashboard" className="w-20 h-20 object-contain" /> 
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Umrah Dashboard</h1>
           <p className="text-gold text-lg font-medium mb-1">Demo</p>
@@ -107,7 +107,7 @@ export default function LoginPage() {
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-8 lg:hidden">
             <div className="w-10 h-10 rounded-xl bg-navy flex items-center justify-center">
-              <img src="/logo.png" alt="Umrah Dashboard" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="Umrah Dashboard" className="w-10 h-10 object-contain" />
             </div>
             <div>
               <p className="font-bold text-navy text-sm">Umrah Dashboard</p>
