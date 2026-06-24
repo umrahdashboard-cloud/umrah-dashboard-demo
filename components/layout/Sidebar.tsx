@@ -63,13 +63,13 @@ export default function Sidebar({ companyName, open, onClose, collapsed, onToggl
           collapsed ? 'flex-col gap-2 px-2 py-4' : 'gap-3 px-4 py-4'
         )}>
           <div className="w-16 h-16 rounded-xl bg-transparent flex items-center justify-center flex-shrink-0">
-            <img src="/logo.webp" alt="Fast Travels & Tours" className="w-full h-full object-contain" />
+            <img src="/logo.png" alt="Umrah Dashboard" className="w-full h-full object-contain" />
           </div>
 
           {!collapsed && (
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold truncate leading-tight">{companyName}</p>
-              <p className="text-[11px] text-white/50 leading-tight">Umrah CRM</p>
+              <p className="text-sm font-bold truncate leading-tight">Umrah Dashboard</p>
+              <p className="text-[11px] text-white/50 leading-tight">Demo Account</p>
             </div>
           )}
 

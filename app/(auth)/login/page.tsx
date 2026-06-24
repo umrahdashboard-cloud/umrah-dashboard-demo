@@ -80,8 +80,8 @@ export default function LoginPage() {
           <div className="w-20 h-20 rounded-2xl bg-gold-gradient flex items-center justify-center mx-auto mb-6 shadow-xl">
             <Plane className="w-10 h-10 text-navy" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Fast Travels</h1>
-          <p className="text-gold text-lg font-medium mb-1">Umrah CRM</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Umrah Dashboard</h1>
+          <p className="text-gold text-lg font-medium mb-1">Demo</p>
           <p className="text-white/40 text-sm max-w-xs">
             Complete package management for Umrah operators
           </p>
@@ -89,8 +89,8 @@ export default function LoginPage() {
           <div className="mt-10 grid grid-cols-3 gap-4 text-center">
             {[
               { value: '100+', label: 'Bookings' },
-              { value: '33', label: 'Hotels' },
-              { value: '4', label: 'Airlines' },
+              { value: '50+', label: 'Hotels' },
+              { value: '10+', label: 'Airlines' },
             ].map(({ value, label }) => (
               <div key={label} className="bg-white/5 rounded-xl p-3">
                 <p className="text-gold text-xl font-bold">{value}</p>
@@ -110,8 +110,8 @@ export default function LoginPage() {
               <Plane className="w-5 h-5 text-gold" />
             </div>
             <div>
-              <p className="font-bold text-navy text-sm">Fast Travels</p>
-              <p className="text-xs text-muted-foreground">Umrah CRM</p>
+              <p className="font-bold text-navy text-sm">Umrah Dashboard</p>
+              <p className="text-xs text-muted-foreground">Demo</p>
             </div>
           </div>
 
@@ -259,7 +259,10 @@ export default function LoginPage() {
           </form>
 
           <p className="text-xs text-muted-foreground text-center mt-6">
-            Fast Travels & Tours — Umrah Package Management
+           Umrah Dashboard - a complete package management system for Umrah operators
+
+           <br />
+           A product by <a href="https://axiusdigital.com" target="_blank" className="text-blue-500">Axius Digital</a>
           </p>
         </div>
       </div>
