@@ -249,7 +249,7 @@ ON CONFLICT (name, city) DO NOTHING;
 -- SECTION 4: Demo Admin User
 --
 -- This creates:
---   Email:    demo@fasttravels.pk
+--   Email:    demo@umrahdashboard.pk
 --   Password: Demo1234
 --
 -- The UUID is fixed so the staff_users row can reference it.
@@ -261,7 +261,7 @@ DECLARE
 BEGIN
 
   -- Only insert if user does not already exist
-  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'demo@fasttravels.pk') THEN
+  IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'demo@umrahdashboard.pk') THEN
 
     INSERT INTO auth.users (
       instance_id,
@@ -287,7 +287,7 @@ BEGIN
       v_user_id,
       'authenticated',
       'authenticated',
-      'demo@fasttravels.pk',
+      'demo@umrahdashboard.pk',
       crypt('Demo1234', gen_salt('bf')),
       NOW(),
       NOW(),
@@ -316,9 +316,9 @@ BEGIN
     ) VALUES (
       gen_random_uuid(),
       v_user_id,
-      jsonb_build_object('sub', v_user_id::text, 'email', 'demo@fasttravels.pk'),
+      jsonb_build_object('sub', v_user_id::text, 'email', 'demo@umrahdashboard.pk'),
       'email',
-      'demo@fasttravels.pk',
+      'demo@umrahdashboard.pk',
       NOW(),
       NOW(),
       NOW()
@@ -328,7 +328,7 @@ BEGIN
     INSERT INTO staff_users (id, name, username, role, permission, status)
     VALUES (v_user_id, 'Demo Admin', 'demo', 'Admin', 'Full Access', 'Active');
 
-    RAISE NOTICE 'Demo user created: demo@fasttravels.pk / Demo1234';
+    RAISE NOTICE 'Demo user created: demo@umrahdashboard.pk / Demo1234';
   ELSE
     RAISE NOTICE 'Demo user already exists — skipped.';
   END IF;

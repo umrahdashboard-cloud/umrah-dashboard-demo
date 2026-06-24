@@ -16,7 +16,7 @@ const IS_DEMO = !process.env.NEXT_PUBLIC_SUPABASE_URL ||
 const SHOW_DEMO_CREDENTIALS = process.env.NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS === 'true'
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
-const DEMO_EMAIL = 'demo@fasttravels.pk'
+const DEMO_EMAIL = 'demo@umrahdashboard.pk'
 const DEMO_PASSWORD = 'Demo1234'
 
 export default function LoginPage() {
