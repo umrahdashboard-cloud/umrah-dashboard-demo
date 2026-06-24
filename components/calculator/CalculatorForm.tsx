@@ -57,7 +57,8 @@ export default function CalculatorForm({
   const [madinahZiarat, setMadinahZiarat] = useState(false)
   const [customTicket, setCustomTicket] = useState(false)
   const [customTicketLabel, setCustomTicketLabel] = useState('')
-  const [customTicketSar, setCustomTicketSar] = useState(0)
+  const [customTicketAmount, setCustomTicketAmount] = useState(0)
+  const [customTicketCurrency, setCustomTicketCurrency] = useState<'SAR' | 'PKR'>('SAR')
   const [travelDate, setTravelDate] = useState('')
   const [departureCity, setDepartureCity] = useState('')
   const [arrivalCity, setArrivalCity] = useState('')
@@ -65,6 +66,10 @@ export default function CalculatorForm({
 
   const PK_CITIES = ['Islamabad', 'Lahore', 'Karachi', 'Peshawar', 'Multan', 'Sialkot', 'Faisalabad', 'Quetta']
   const SA_CITIES = ['Jeddah', 'Madinah', 'Riyadh', 'Dammam']
+
+  const customTicketPkr = customTicketCurrency === 'SAR'
+    ? customTicketAmount * currency.sar_to_pkr
+    : customTicketAmount
 
   const airline = airlines.find(a => a.id === airlineId) ?? null
   const makkahHotel = makkahHotels.find(h => h.id === makkahHotelId) ?? null
@@ -80,7 +85,7 @@ export default function CalculatorForm({
     madinahZiarat,
     customTicket,
     customTicketLabel,
-    customTicketSar,
+    customTicketPkr,
   }
 
   const calc = useMemo(
@@ -93,7 +98,7 @@ export default function CalculatorForm({
      visa.infant_sar, visa.transport_mode,
      visa.makkah_ziarat_rate, visa.madina_ziarat_rate,
      makkahZiarat, madinahZiarat,
-     customTicket, customTicketSar,
+     customTicket, customTicketPkr,
      transportRates]
   )
 
@@ -258,18 +263,36 @@ export default function CalculatorForm({
                       onChange={e => setCustomTicketLabel(e.target.value)}
                     />
                   </div>
-                  {/* Price in SAR */}
+                  {/* Price with SAR / PKR toggle */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Ticket Price (SAR)</Label>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs">Ticket Price</Label>
+                      <div className="flex rounded-md overflow-hidden border text-xs">
+                        {(['SAR', 'PKR'] as const).map(cur => (
+                          <button
+                            key={cur}
+                            type="button"
+                            onClick={() => setCustomTicketCurrency(cur)}
+                            className={`px-2.5 py-0.5 font-semibold transition-colors ${
+                              customTicketCurrency === cur
+                                ? 'bg-navy text-white'
+                                : 'bg-white text-muted-foreground hover:bg-muted'
+                            }`}
+                          >
+                            {cur}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <Input
                       type="number" min={0}
-                      value={customTicketSar || ''}
+                      value={customTicketAmount || ''}
                       placeholder="0"
-                      onChange={e => setCustomTicketSar(parseFloat(e.target.value) || 0)}
+                      onChange={e => setCustomTicketAmount(parseFloat(e.target.value) || 0)}
                     />
-                    {customTicketSar > 0 && (
+                    {customTicketAmount > 0 && customTicketCurrency === 'SAR' && (
                       <p className="text-xs text-muted-foreground">
-                        = {fmtPkr(customTicketSar * currency.sar_to_pkr)}
+                        = {fmtPkr(customTicketPkr)}
                       </p>
                     )}
                   </div>
@@ -592,7 +615,7 @@ export default function CalculatorForm({
         company={company}
         customTicket={customTicket}
         customTicketLabel={customTicketLabel}
-        customTicketPkr={customTicketSar * currency.sar_to_pkr}
+        customTicketPkr={customTicketPkr}
         makkahZiarat={makkahZiarat}
         madinahZiarat={madinahZiarat}
         travelDate={travelDate}

@@ -1,23 +1,34 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { login } from '@/app/actions/auth'
-import { Plane, Eye, EyeOff, Loader2, Zap } from 'lucide-react'
+import { Plane, Eye, EyeOff, Loader2, Zap, Copy, Check, KeyRound } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Turnstile } from '@marsidev/react-turnstile'
+import type { TurnstileInstance } from '@marsidev/react-turnstile'
 
 const IS_DEMO = !process.env.NEXT_PUBLIC_SUPABASE_URL ||
   process.env.NEXT_PUBLIC_SUPABASE_URL.includes('your-project')
+
+const SHOW_DEMO_CREDENTIALS = process.env.NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS === 'true'
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+
+const DEMO_EMAIL = 'demo@fasttravels.pk'
+const DEMO_PASSWORD = 'Demo1234'
 
 export default function LoginPage() {
   const [showPass, setShowPass] = useState(false)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [copiedEmail, setCopiedEmail] = useState(false)
+  const [copiedPassword, setCopiedPassword] = useState(false)
+  const turnstileRef = useRef<TurnstileInstance>(null)
   const router = useRouter()
 
-  // Demo mode: set a cookie and redirect
   function handleDemoLogin() {
     document.cookie = 'demo_session=1; path=/; max-age=86400'
     router.push('/dashboard')
@@ -26,10 +37,36 @@ export default function LoginPage() {
 
   async function handleSubmit(formData: FormData) {
     setError('')
+
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      setError('Please complete the CAPTCHA verification.')
+      return
+    }
+
+    if (TURNSTILE_SITE_KEY) {
+      formData.set('cf_turnstile_token', turnstileToken)
+    }
+
     startTransition(async () => {
       const result = await login(formData)
-      if (result?.error) setError(result.error)
+      if (result?.error) {
+        setError(result.error)
+        // Reset Turnstile on error so user can retry
+        turnstileRef.current?.reset()
+        setTurnstileToken('')
+      }
     })
+  }
+
+  function copyToClipboard(text: string, type: 'email' | 'password') {
+    navigator.clipboard.writeText(text)
+    if (type === 'email') {
+      setCopiedEmail(true)
+      setTimeout(() => setCopiedEmail(false), 2000)
+    } else {
+      setCopiedPassword(true)
+      setTimeout(() => setCopiedPassword(false), 2000)
+    }
   }
 
   return (
@@ -79,9 +116,9 @@ export default function LoginPage() {
           </div>
 
           <h2 className="text-2xl font-bold text-navy mb-1">Welcome back</h2>
-          <p className="text-muted-foreground text-sm mb-8">Sign in to your dashboard</p>
+          <p className="text-muted-foreground text-sm mb-6">Sign in to your dashboard</p>
 
-          {/* Demo mode banner */}
+          {/* Demo mode banner (local dev without Supabase) */}
           {IS_DEMO && (
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
               <div className="flex items-start gap-3">
@@ -103,6 +140,49 @@ export default function LoginPage() {
             </div>
           )}
 
+          {/* Public demo credentials card */}
+          {!IS_DEMO && SHOW_DEMO_CREDENTIALS && (
+            <div className="bg-navy/5 border border-navy/20 rounded-xl p-4 mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <KeyRound className="w-4 h-4 text-navy" />
+                <p className="text-sm font-semibold text-navy">Try the Demo</p>
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                Use these credentials to explore the CRM:
+              </p>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-slate-200">
+                  <div>
+                    <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">Email</p>
+                    <p className="text-sm font-mono text-navy">{DEMO_EMAIL}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(DEMO_EMAIL, 'email')}
+                    className="text-muted-foreground hover:text-navy transition-colors p-1"
+                    title="Copy email"
+                  >
+                    {copiedEmail ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+                <div className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-slate-200">
+                  <div>
+                    <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">Password</p>
+                    <p className="text-sm font-mono text-navy">{DEMO_PASSWORD}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(DEMO_PASSWORD, 'password')}
+                    className="text-muted-foreground hover:text-navy transition-colors p-1"
+                    title="Copy password"
+                  >
+                    {copiedPassword ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <form action={handleSubmit} className="space-y-5">
             <div className="space-y-1.5">
               <Label htmlFor="email" className="text-sm font-medium">Email address</Label>
@@ -111,7 +191,7 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 placeholder="admin@fasttravels.pk"
-                defaultValue={IS_DEMO ? 'admin@fasttravels.pk' : ''}
+                defaultValue={IS_DEMO ? 'admin@fasttravels.pk' : (SHOW_DEMO_CREDENTIALS ? DEMO_EMAIL : '')}
                 required
                 className="h-11"
               />
@@ -139,6 +219,23 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* Cloudflare Turnstile CAPTCHA */}
+            {!IS_DEMO && TURNSTILE_SITE_KEY && (
+              <div className="flex justify-center">
+                <Turnstile
+                  ref={turnstileRef}
+                  siteKey={TURNSTILE_SITE_KEY}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  onExpire={() => setTurnstileToken('')}
+                  onError={() => {
+                    setTurnstileToken('')
+                    setError('CAPTCHA failed to load. Please refresh the page.')
+                  }}
+                  options={{ theme: 'light', size: 'normal' }}
+                />
+              </div>
+            )}
+
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">
                 {error}
@@ -148,8 +245,8 @@ export default function LoginPage() {
             {!IS_DEMO && (
               <Button
                 type="submit"
-                disabled={isPending}
-                className="w-full h-11 bg-navy hover:bg-navy-2 text-white font-semibold"
+                disabled={isPending || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
+                className="w-full h-11 bg-navy hover:bg-navy-2 text-white font-semibold disabled:opacity-50"
               >
                 {isPending ? (
                   <>

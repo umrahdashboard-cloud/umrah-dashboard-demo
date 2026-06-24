@@ -20,15 +20,15 @@ export function getCalc(
           madinahHotel, madinahRoom, madinahNights,
           profitType, profitValue, sellingOverride, advance,
           makkahZiarat, madinahZiarat,
-          customTicket, customTicketSar } = input
+          customTicket, customTicketPkr } = input
 
   const pax = Math.max(1, adult + child + infant)
 
   // Tickets (PKR)
-  // Custom ticket: user enters a flat SAR price for the whole group → convert to PKR
+  // Custom ticket: already converted to PKR by the form (handles SAR→PKR or direct PKR entry)
   // Standard ticket: per-pax PKR rates from the airline record
   const ticketCost = customTicket
-    ? customTicketSar * sarToPkr
+    ? customTicketPkr
     : airline
       ? adult * airline.adult_pkr + child * airline.child_pkr + infant * airline.infant_pkr
       : 0
