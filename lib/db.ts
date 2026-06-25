@@ -6,7 +6,7 @@
 
 import { isDemoMode } from './is-demo'
 import { demoStore } from './demo-store'
-import type { Airline, Hotel, Booking, Payment, Expense, StaffUser, VisaSettings, CurrencySettings, TransportRate, Company } from './types'
+import type { Airline, Hotel, Booking, Payment, Expense, StaffUser, VisaSettings, CurrencySettings, TransportRate, Company, InvoiceSettings, CustomInvoice } from './types'
 
 async function getSupabase() {
   const { createClient } = await import('./supabase/server')
@@ -115,6 +115,27 @@ export async function getExpenses(): Promise<Expense[]> {
   const sb = await getSupabase()
   const { data } = await sb.from('expenses').select('*').order('created_at', { ascending: false })
   return data ?? []
+}
+
+// ── Invoice Settings ─────────────────────────────────────────────────────────
+
+export async function getInvoiceSettings(): Promise<InvoiceSettings | null> {
+  if (isDemoMode()) return demoStore.invoiceSettings ? { ...demoStore.invoiceSettings } : null
+  const sb = await getSupabase()
+  const { data } = await sb.from('invoice_settings').select('*').maybeSingle()
+  return data ?? null
+}
+
+// ── Custom Invoices ──────────────────────────────────────────────────────────
+
+export async function getCustomInvoices(): Promise<CustomInvoice[]> {
+  if (isDemoMode()) return [...demoStore.customInvoices]
+  const sb = await getSupabase()
+  const { data } = await sb.from('custom_invoices').select('*').order('created_at', { ascending: false })
+  return (data ?? []).map(row => ({
+    ...row,
+    line_items: typeof row.line_items === 'string' ? JSON.parse(row.line_items) : row.line_items,
+  })) as CustomInvoice[]
 }
 
 // ── Staff users ───────────────────────────────────────────────────────────────

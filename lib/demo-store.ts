@@ -1,4 +1,4 @@
-import type { Airline, Hotel, Booking, Payment, Expense, StaffUser, VisaSettings, CurrencySettings, TransportRate, Company } from './types'
+import type { Airline, Hotel, Booking, Payment, Expense, StaffUser, VisaSettings, CurrencySettings, TransportRate, Company, InvoiceSettings, CustomInvoice } from './types'
 
 // ---------------------------------------------------------------------------
 // Singleton in-memory store — survives multiple requests in dev server
@@ -95,6 +95,16 @@ const DEFAULT_BOOKINGS: Booking[] = [
 // Singleton store
 // ---------------------------------------------------------------------------
 
+const DEFAULT_INVOICE_SETTINGS: InvoiceSettings = {
+  id: 'is1',
+  payment_bank_name: 'Meezan Bank',
+  payment_account_number: '01234567890123',
+  terms_text: 'All payments are due upon receipt. Late payments may incur additional charges. Services rendered are non-refundable once confirmed. Visa approval is subject to Saudi embassy decision and is not guaranteed.',
+  contact_phone: '+92 300 0000000',
+  contact_email: 'info@fasttravels.pk',
+  contact_location: 'Lahore, Pakistan',
+}
+
 class DemoStore {
   airlines: Airline[] = [...DEFAULT_AIRLINES]
   hotels: Hotel[] = [...DEFAULT_HOTELS]
@@ -106,6 +116,9 @@ class DemoStore {
   payments: Payment[] = []
   expenses: Expense[] = []
   staff: StaffUser[] = [...DEFAULT_STAFF]
+  invoiceSettings: InvoiceSettings = { ...DEFAULT_INVOICE_SETTINGS }
+  customInvoices: CustomInvoice[] = []
+  invoiceCounter: number = 0
 
   // Airlines
   upsertAirline(data: Omit<Airline, 'id'> & { id?: string }) {
@@ -163,6 +176,19 @@ class DemoStore {
   }
   deleteExpense(id: string) { this.expenses = this.expenses.filter(e => e.id !== id) }
 
+  // Custom Invoices
+  addCustomInvoice(data: Omit<CustomInvoice, 'id' | 'created_at' | 'invoice_number'>): CustomInvoice {
+    this.invoiceCounter++
+    const invoice_number = `ATI-${String(this.invoiceCounter).padStart(3, '0')}`
+    const invoice: CustomInvoice = { ...data, id: uid(), invoice_number, created_at: new Date().toISOString() }
+    this.customInvoices = [invoice, ...this.customInvoices]
+    return invoice
+  }
+  deleteCustomInvoice(id: string) { this.customInvoices = this.customInvoices.filter(i => i.id !== id) }
+  updateInvoiceSettings(data: Partial<Omit<InvoiceSettings, 'id'>>) {
+    this.invoiceSettings = { ...this.invoiceSettings, ...data, updated_at: new Date().toISOString() }
+  }
+
   // Staff
   addStaff(data: Omit<StaffUser, 'id' | 'created_at'>) {
     this.staff = [{ ...data, id: uid(), created_at: new Date().toISOString() }, ...this.staff]
@@ -183,11 +209,14 @@ class DemoStore {
     this.payments = []
     this.expenses = []
     this.staff = [...DEFAULT_STAFF]
+    this.invoiceSettings = { ...DEFAULT_INVOICE_SETTINGS }
+    this.customInvoices = []
+    this.invoiceCounter = 0
   }
 }
 
 // Bump this whenever DemoStore gains new fields, to force recreation in dev hot-reloads
-const STORE_VERSION = 3
+const STORE_VERSION = 4
 
 const globalStore = globalThis as typeof globalThis & {
   __demoStore?: DemoStore

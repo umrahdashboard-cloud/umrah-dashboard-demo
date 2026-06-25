@@ -126,6 +126,49 @@ export interface StaffUser {
 export type StaffRole = 'Admin' | 'Booking Staff' | 'Accounts Staff' | 'Visa Staff' | 'Viewer'
 export type StaffPermission = 'Full Access' | 'Bookings + Customers' | 'Accounts Only' | 'Visa Only' | 'View Only'
 
+// ── Custom Invoice ────────────────────────────────────────────────────────────
+
+export interface InvoiceSettings {
+  id: string
+  payment_bank_name: string
+  payment_account_number: string
+  terms_text: string
+  contact_phone: string
+  contact_email: string
+  contact_location: string
+  updated_at?: string
+}
+
+export interface CustomInvoiceLineItem {
+  service: string
+  pax_price: number | null   // null = column hidden for this row
+  pax_price_unit: string     // free text, e.g. "SAR", "PKR", "" 
+  total_pax: number
+  total: number
+  total_unit: string
+  received: number
+}
+
+export interface CustomInvoice {
+  id: string
+  invoice_number: string     // ATI-001, ATI-002, …
+  invoice_date: string       // ISO date
+  billed_to_name: string
+  billed_to_address: string
+  billed_to_client_number: string
+  payment_bank_name: string
+  payment_account_number: string
+  terms_text: string
+  contact_phone: string
+  contact_email: string
+  contact_location: string
+  line_items: CustomInvoiceLineItem[]
+  total: number
+  received: number
+  remaining: number
+  created_at: string
+}
+
 export interface CalcInput {
   adult: number
   child: number

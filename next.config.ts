@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Limit memory usage during dev compilation on low-end machines
+  onDemandEntries: {
+    maxInactiveAge: 15 * 1000,
+    pagesBufferLength: 2,
+  },
 }
 
 export default nextConfig

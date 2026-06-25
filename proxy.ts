@@ -59,7 +59,9 @@ export default async function proxy(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  // getSession() reads the JWT from the cookie — no network call, instant.
+  const { data: { session } } = await supabase.auth.getSession()
+  const user = session?.user ?? null
 
   if (!user && pathname !== '/login') {
     return NextResponse.redirect(new URL('/login', request.url))

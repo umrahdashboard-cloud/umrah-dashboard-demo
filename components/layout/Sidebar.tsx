@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Calculator, BookOpen, Users, FileText,
   Wallet, BarChart3, Settings, UserCog, LogOut, Plane, X,
-  PanelLeftClose, PanelLeftOpen,
+  PanelLeftClose, PanelLeftOpen, Receipt,
 } from 'lucide-react'
 import { logout } from '@/app/actions/auth'
 import { cn } from '@/lib/utils'
@@ -16,6 +16,7 @@ const navItems = [
   { href: '/bookings', label: 'Bookings', icon: BookOpen },
   { href: '/customers', label: 'Customers', icon: Users },
   { href: '/invoices', label: 'Invoices', icon: FileText },
+  { href: '/custom-invoices', label: 'Custom Invoices', icon: Receipt },
   { href: '/accounts', label: 'Accounts', icon: Wallet },
   { href: '/reports', label: 'Reports', icon: BarChart3 },
   { href: '/settings/visa', label: 'Settings', icon: Settings },
